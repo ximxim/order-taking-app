@@ -5,6 +5,7 @@ import {
   FirebaseAuthProvider,
 } from "react-admin-firebase";
 
+import { CategoryProps } from "../components/category-resource";
 import { firebaseConfig } from "../utils/firebase";
 
 const options: RAFirebaseOptions = {
@@ -26,7 +27,7 @@ export const Admin = () => {
       basename="/admin"
       dataProvider={dataProvider}
     >
-      <Resource name="items" list={ListGuesser} />
+      <Resource {...CategoryProps} />
     </RAdmin>
   );
 };
