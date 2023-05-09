@@ -12,6 +12,7 @@ import { Cart } from "./pages/cart";
 import { Checkout } from "./pages/checkout";
 import { ThankYou } from "./pages/thankyou";
 import { Info } from "./pages/info";
+import { Admin } from "./pages/admin";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
         element: <Info />,
       },
     ],
+  },
+  {
+    path: "admin/*",
+    element: <Admin />,
   },
 ]);
 
