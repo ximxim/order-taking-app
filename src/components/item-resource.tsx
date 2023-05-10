@@ -11,38 +11,43 @@ import {
   ImageInput,
   ImageField,
   Edit,
+  NumberInput,
+  number,
+  NumberField,
 } from "react-admin";
-import { MdOutlineCategory } from "react-icons/md";
+import { MdOutlineFastfood } from "react-icons/md";
 
-const CategoryForm = () => {
+const ItemForm = () => {
   return (
     <SimpleForm sanitizeEmptyValues>
       <ImageInput source="image" label="Image">
         <ImageField source="src" title="title" />
       </ImageInput>
-      <TextInput source="title" validate={[required()]} fullWidth />
+      <TextInput source="label" validate={[required()]} fullWidth />
+      <NumberInput source="price" validate={[required(), number()]} fullWidth />
       <TextInput source="description" fullWidth />
     </SimpleForm>
   );
 };
 
-const CategoryEdit = () => (
+const ItemEdit = () => (
   <Edit>
-    <CategoryForm />
+    <ItemForm />
   </Edit>
 );
 
-const CategoryCreate = () => (
+const ItemCreate = () => (
   <Create>
-    <CategoryForm />
+    <ItemForm />
   </Create>
 );
 
-const CategoryList = () => (
+const ItemList = () => (
   <List>
     <Datagrid rowClick="edit">
       <ImageField source="image.src" label="Image" />
-      <TextField source="title" />
+      <TextField source="label" />
+      <NumberField source="price" />
       <TextField source="description" />
       <DateField source="createdate" showTime label="Created At" />
       <DateField source="lastupdate" showTime label="Updated At" />
@@ -50,10 +55,10 @@ const CategoryList = () => (
   </List>
 );
 
-export const CategoryProps: ResourceProps = {
-  icon: MdOutlineCategory,
-  name: "category",
-  list: CategoryList,
-  create: CategoryCreate,
-  edit: CategoryEdit,
+export const ItemProps: ResourceProps = {
+  icon: MdOutlineFastfood,
+  name: "item",
+  list: ItemList,
+  create: ItemCreate,
+  edit: ItemEdit,
 };

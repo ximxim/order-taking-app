@@ -7,6 +7,7 @@ import {
 
 import { CategoryProps } from "../components/category-resource";
 import { firebaseConfig } from "../utils/firebase";
+import { ItemProps } from "../components/item-resource";
 
 const options: RAFirebaseOptions = {
   logging: true,
@@ -28,6 +29,7 @@ export const Admin = () => {
       dataProvider={dataProvider}
     >
       <Resource {...CategoryProps} />
+      <Resource {...ItemProps} />
     </RAdmin>
   );
 };
