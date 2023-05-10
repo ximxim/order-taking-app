@@ -14,6 +14,9 @@ import {
   NumberInput,
   number,
   NumberField,
+  ArrayInput,
+  SimpleFormIterator,
+  BooleanInput,
 } from "react-admin";
 import { MdOutlineFastfood } from "react-icons/md";
 
@@ -26,6 +29,19 @@ const ItemForm = () => {
       <TextInput source="label" validate={[required()]} fullWidth />
       <NumberInput source="price" validate={[required(), number()]} fullWidth />
       <TextInput source="description" fullWidth />
+      <ArrayInput source="variants">
+        <SimpleFormIterator fullWidth>
+          <TextInput source="type" helperText={false} fullWidth />
+          <ArrayInput source="choices">
+            <SimpleFormIterator inline>
+              <TextInput source="label" />
+              <NumberInput source="price" defaultValue={0} />
+            </SimpleFormIterator>
+          </ArrayInput>
+          <BooleanInput source="allowMultiple" helperText={false} fullWidth />
+          <BooleanInput source="isRequired" helperText={false} fullWidth />
+        </SimpleFormIterator>
+      </ArrayInput>
     </SimpleForm>
   );
 };
