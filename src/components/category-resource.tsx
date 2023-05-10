@@ -10,10 +10,11 @@ import {
   DateField,
   ImageInput,
   ImageField,
+  Edit,
 } from "react-admin";
 
-export const CategoryCreate = () => (
-  <Create>
+const CategoryForm = () => {
+  return (
     <SimpleForm sanitizeEmptyValues>
       <ImageInput source="image" label="Image">
         <ImageField source="src" title="title" />
@@ -21,12 +22,24 @@ export const CategoryCreate = () => (
       <TextInput source="title" validate={[required()]} fullWidth />
       <TextInput source="description" fullWidth />
     </SimpleForm>
+  );
+};
+
+const CategoryEdit = () => (
+  <Edit>
+    <CategoryForm />
+  </Edit>
+);
+
+const CategoryCreate = () => (
+  <Create>
+    <CategoryForm />
   </Create>
 );
 
 const CategoryList = () => (
   <List>
-    <Datagrid>
+    <Datagrid rowClick="edit">
       <ImageField source="image.src" />
       <TextField source="title" />
       <TextField source="description" />
@@ -40,4 +53,5 @@ export const CategoryProps: ResourceProps = {
   name: "category",
   list: CategoryList,
   create: CategoryCreate,
+  edit: CategoryEdit,
 };
