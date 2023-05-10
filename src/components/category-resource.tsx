@@ -40,7 +40,7 @@ const CategoryCreate = () => (
 const CategoryList = () => (
   <List>
     <Datagrid rowClick="edit">
-      <ImageField source="image.src" />
+      <ImageField source="image.src" label="Image" />
       <TextField source="title" />
       <TextField source="description" />
       <DateField source="createdate" showTime label="Created At" />
