@@ -17,6 +17,10 @@ import {
   ArrayInput,
   SimpleFormIterator,
   BooleanInput,
+  ReferenceInput,
+  SelectInput,
+  ReferenceField,
+  ChipField,
 } from "react-admin";
 import { MdOutlineFastfood } from "react-icons/md";
 
@@ -26,6 +30,9 @@ const ItemForm = () => {
       <ImageInput source="image" label="Image">
         <ImageField source="src" title="title" />
       </ImageInput>
+      <ReferenceInput source="category" reference="category">
+        <SelectInput optionText="title" fullWidth validate={[required()]} />
+      </ReferenceInput>
       <TextInput source="label" validate={[required()]} fullWidth />
       <NumberInput source="price" validate={[required(), number()]} fullWidth />
       <TextInput source="description" fullWidth />
@@ -63,6 +70,9 @@ const ItemList = () => (
     <Datagrid rowClick="edit">
       <ImageField source="image.src" label="Image" />
       <TextField source="label" />
+      <ReferenceField source="category" reference="category">
+        <ChipField source="title" />
+      </ReferenceField>
       <NumberField source="price" />
       <TextField source="description" />
       <DateField source="createdate" showTime label="Created At" />
