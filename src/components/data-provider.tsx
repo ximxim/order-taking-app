@@ -7,15 +7,18 @@ import {
   useEffect,
   useState,
 } from "react";
-import { IRestraunt } from "../models";
-import { doc, getDoc, getDocs } from "firebase/firestore";
+import { ICategory, IRestraunt } from "../models";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../utils/firebase";
 
 interface IDataProviderContext {
   restaurantInfo?: IRestraunt;
+  categories: ICategory[];
 }
 
-const DataProviderContext = createContext<IDataProviderContext>({});
+const DataProviderContext = createContext<IDataProviderContext>({
+  categories: [],
+});
 
 export const useDataProvider = () => useContext(DataProviderContext);
 
@@ -24,6 +27,16 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
 }) => {
   const [isReady, setIsReady] = useState(false);
   const [restaurantInfo, setRestaurantInfo] = useState<IRestraunt>();
+  const [categories, setCategories] = useState<ICategory[]>([]);
+
+  const fetchCategories = async () => {
+    const categoriesSnapshot = await getDocs(collection(db, "category"));
+    const dbCategories: ICategory[] = [];
+    categoriesSnapshot.forEach((category) =>
+      dbCategories.push(category.data() as ICategory)
+    );
+    setCategories(dbCategories);
+  };
 
   const fetchRestaurantInfo = async () => {
     const restaurantInfoSnapshot = await getDoc(doc(db, "restaurant", "info"));
@@ -31,6 +44,7 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
   };
 
   const fetchData = async () => {
+    await fetchCategories();
     await fetchRestaurantInfo();
     setIsReady(true);
   };
@@ -40,7 +54,7 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
   }, []);
 
   return (
-    <DataProviderContext.Provider value={{ restaurantInfo }}>
+    <DataProviderContext.Provider value={{ restaurantInfo, categories }}>
       {isReady ? (
         children
       ) : (
