@@ -16,11 +16,13 @@ interface IDataProviderContext {
   restaurantInfo?: IRestraunt;
   categories: ICategory[];
   items: IItem[];
+  getItemsByCategory: (category: string) => IItem[];
 }
 
 const DataProviderContext = createContext<IDataProviderContext>({
   categories: [],
   items: [],
+  getItemsByCategory: () => [],
 });
 
 export const useDataProvider = () => useContext(DataProviderContext);
@@ -34,7 +36,7 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
   const [items, setItems] = useState<IItem[]>([]);
 
   const fetchCategories = async () => {
-    const categoriesSnapshot = await getDocs(collection(db, "category"));
+    const categoriesSnapshot = await getDocs(collection(db, "categories"));
     const dbCategories: ICategory[] = [];
     categoriesSnapshot.forEach((category) =>
       dbCategories.push(category.data() as ICategory)
@@ -43,14 +45,14 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
   };
 
   const fetchItems = async () => {
-    const itemsSnapshot = await getDocs(collection(db, "item"));
+    const itemsSnapshot = await getDocs(collection(db, "items"));
     const dbItems: IItem[] = [];
     itemsSnapshot.forEach((item) => dbItems.push(item.data() as IItem));
     setItems(dbItems);
   };
 
   const fetchRestaurantInfo = async () => {
-    const restaurantInfoSnapshot = await getDoc(doc(db, "restaurant", "info"));
+    const restaurantInfoSnapshot = await getDoc(doc(db, "restraunt", "info"));
     setRestaurantInfo(restaurantInfoSnapshot.data() as IRestraunt);
   };
 
@@ -62,12 +64,18 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
     setIsReady(true);
   };
 
+  const getItemsByCategory = (category: string): IItem[] => {
+    return items.filter((item) => item.category === category);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   return (
-    <DataProviderContext.Provider value={{ restaurantInfo, categories, items }}>
+    <DataProviderContext.Provider
+      value={{ restaurantInfo, categories, items, getItemsByCategory }}
+    >
       {isReady ? (
         children
       ) : (
