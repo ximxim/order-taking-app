@@ -15,12 +15,17 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useDataProvider } from "../components/data-provider";
 import { ILine } from "../models";
+import { useEffect } from "react";
 
-const Variant = ({ allowMultiple, ...props }: any) =>
-  allowMultiple ? <CheckboxGroup {...props} /> : <RadioGroup {...props} />;
+const Variant = ({ allowMultiple, defaultValue, ...props }: any) =>
+  allowMultiple ? (
+    <CheckboxGroup {...props} defaultValue={[defaultValue]} />
+  ) : (
+    <RadioGroup {...props} defaultValue={defaultValue} />
+  );
 
 const Choice = ({ allowMultiple, ...props }: any) =>
   allowMultiple ? <Checkbox {...props} /> : <Radio {...props} />;
@@ -29,7 +34,7 @@ export const Item = () => {
   const { id } = useParams();
   const { getItemById } = useDataProvider();
   const item = getItemById(id!);
-  const { register, handleSubmit, formState } = useForm<ILine>({
+  const { register, handleSubmit, formState, watch, control } = useForm<ILine>({
     defaultValues: {
       quantity: 1,
       value: [],
@@ -37,8 +42,26 @@ export const Item = () => {
       label: item!.label,
     },
   });
+  const { append, remove, fields } = useFieldArray<ILine, "value">({
+    control,
+    name: "value",
+  });
 
   const onSubmit = (values: ILine) => console.log(values);
+
+  useEffect(() => {
+    if (!item?.variants.length) return;
+
+    item.variants
+      .filter((variant) => variant.isRequired)
+      .forEach((variant) =>
+        append({
+          price: variant.choices[0].price,
+          value: variant.choices[0].label,
+          variant: variant.type,
+        })
+      );
+  }, []);
 
   if (!item) return null;
 
@@ -58,7 +81,39 @@ export const Item = () => {
                   </Text>
                 )}
               </FormLabel>
-              <Variant allowMultiple={variant.allowMultiple}>
+              <Variant
+                defaultValue={
+                  variant.isRequired ? `${variant.type}:0` : undefined
+                }
+                allowMultiple={variant.allowMultiple}
+                onChange={(index: string | string[]) => {
+                  const removeAll = fields.reduce((acc, field: any, index) => {
+                    if (field.variant !== variant.type) return acc;
+                    return [...acc, index];
+                  }, [] as number[]);
+                  remove(removeAll);
+                  if (Array.isArray(index)) {
+                    const currIndexs = index
+                      .filter((i) => !!i)
+                      .map((i) => parseInt(i.split(":")[1]));
+
+                    currIndexs.forEach((i) =>
+                      append({
+                        price: variant.choices[i].price,
+                        value: variant.choices[i].label,
+                        variant: variant.type,
+                      })
+                    );
+                  } else {
+                    const currIndex = parseInt(index.split(":")[1]);
+                    append({
+                      price: variant.choices[currIndex].price,
+                      value: variant.choices[currIndex].label,
+                      variant: variant.type,
+                    });
+                  }
+                }}
+              >
                 <VStack
                   alignItems="flex-start"
                   border="1px solid"
