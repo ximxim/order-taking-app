@@ -7,11 +7,21 @@ import {
   Textarea,
   Input,
   FormErrorMessage,
+  CheckboxGroup,
+  Checkbox,
+  RadioGroup,
+  Radio,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDataProvider } from "../components/data-provider";
 import { ILine } from "../models";
+
+const Variant = ({ allowMultiple, ...props }: any) =>
+  allowMultiple ? <CheckboxGroup {...props} /> : <RadioGroup {...props} />;
+
+const Choice = ({ allowMultiple, ...props }: any) =>
+  allowMultiple ? <Checkbox {...props} /> : <Radio {...props} />;
 
 export const Item = () => {
   const { id } = useParams();
@@ -36,6 +46,21 @@ export const Item = () => {
         <Image src={item.image.src} w="100%" maxH="280px" objectFit="cover" />
         <VStack gap={4} p={4} w="100%" alignItems="flex-start">
           <Text>{item.description}</Text>
+          {item.variants.map((variant) => (
+            <FormControl>
+              <FormLabel>{variant.type}</FormLabel>
+              <Variant allowMultiple={variant.allowMultiple}>
+                {variant.choices.map((choice, index) => (
+                  <Choice
+                    value={`${variant.type}:${index}`}
+                    allowMultiple={variant.allowMultiple}
+                  >
+                    {choice.label}
+                  </Choice>
+                ))}
+              </Variant>
+            </FormControl>
+          ))}
           <FormControl>
             <FormLabel>Special Instructions</FormLabel>
             <Textarea
