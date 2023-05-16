@@ -11,6 +11,8 @@ import {
   Checkbox,
   RadioGroup,
   Radio,
+  Box,
+  Flex,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -48,16 +50,46 @@ export const Item = () => {
           <Text>{item.description}</Text>
           {item.variants.map((variant) => (
             <FormControl>
-              <FormLabel>{variant.type}</FormLabel>
+              <FormLabel>
+                {variant.type}{" "}
+                {variant.isRequired && (
+                  <Text as="span" fontSize={12} color="gray.500">
+                    (Required)
+                  </Text>
+                )}
+              </FormLabel>
               <Variant allowMultiple={variant.allowMultiple}>
-                {variant.choices.map((choice, index) => (
-                  <Choice
-                    value={`${variant.type}:${index}`}
-                    allowMultiple={variant.allowMultiple}
-                  >
-                    {choice.label}
-                  </Choice>
-                ))}
+                <VStack
+                  alignItems="flex-start"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  borderRadius={4}
+                >
+                  {variant.choices.map((choice, index, arr) => (
+                    <Box
+                      px={4}
+                      py={2}
+                      w="100%"
+                      borderColor="gray.200"
+                      borderBottomWidth={arr.length - 1 === index ? 0 : 1}
+                      mt="0px !important"
+                    >
+                      <Choice
+                        value={`${variant.type}:${index}`}
+                        allowMultiple={variant.allowMultiple}
+                      >
+                        <Flex gap={3}>
+                          <Text>{choice.label}</Text>
+                          {choice.price > 0 && (
+                            <Text color="gray.500" fontSize={12}>
+                              +${choice.price.toFixed(2)}
+                            </Text>
+                          )}
+                        </Flex>
+                      </Choice>
+                    </Box>
+                  ))}
+                </VStack>
               </Variant>
             </FormControl>
           ))}
