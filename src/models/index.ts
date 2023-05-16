@@ -1,5 +1,10 @@
 export type PaymentMethodType = 'cash' | 'card' | 'phone';
 
+export type ImageType = {
+	src: string;
+	title: string;
+}
+
 export interface IRestraunt {
 	name: string;
 	address: string;
@@ -14,7 +19,7 @@ export interface ICategory {
 	createdate: string;
 	lastupdate: string;
 	createby: string;
-	image: string;
+	image: ImageType;
 	title: string;
 	description: string;
 }
@@ -24,7 +29,7 @@ export interface IItem {
 	createdate: string;
 	lastupdate: string;
 	createby: string;
-	image: string;
+	image: ImageType;
 	description: string;
 	price: number;
 	label: string;
