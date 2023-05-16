@@ -17,12 +17,14 @@ interface IDataProviderContext {
   categories: ICategory[];
   items: IItem[];
   getItemsByCategory: (category: string) => IItem[];
+  getItemById: (itemId: string) => IItem | undefined;
 }
 
 const DataProviderContext = createContext<IDataProviderContext>({
   categories: [],
   items: [],
   getItemsByCategory: () => [],
+  getItemById: () => undefined,
 });
 
 export const useDataProvider = () => useContext(DataProviderContext);
@@ -64,6 +66,10 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
     setIsReady(true);
   };
 
+  const getItemById = (itemId: string) => {
+    return items.find((item) => item.id === itemId);
+  };
+
   const getItemsByCategory = (category: string): IItem[] => {
     return items.filter((item) => item.category === category);
   };
@@ -74,7 +80,13 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
 
   return (
     <DataProviderContext.Provider
-      value={{ restaurantInfo, categories, items, getItemsByCategory }}
+      value={{
+        restaurantInfo,
+        categories,
+        items,
+        getItemsByCategory,
+        getItemById,
+      }}
     >
       {isReady ? (
         children

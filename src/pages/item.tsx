@@ -1,9 +1,61 @@
-import { Box } from "@chakra-ui/react";
+import {
+  Text,
+  Image,
+  VStack,
+  FormControl,
+  FormLabel,
+  Textarea,
+  Input,
+  FormErrorMessage,
+} from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useDataProvider } from "../components/data-provider";
+import { ILine } from "../models";
 
 export const Item = () => {
+  const { id } = useParams();
+  const { getItemById } = useDataProvider();
+  const item = getItemById(id!);
+  const { register, handleSubmit, formState } = useForm<ILine>({
+    defaultValues: {
+      quantity: 1,
+      value: [],
+      price: item!.price,
+      label: item!.label,
+    },
+  });
+
+  const onSubmit = (values: ILine) => console.log(values);
+
+  if (!item) return null;
+
   return (
-    <Box>
-      <p>Item page</p>
-    </Box>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <VStack gap={4} pb={100} alignItems="flex-start">
+        <Image src={item.image.src} w="100%" maxH="280px" objectFit="cover" />
+        <VStack gap={4} p={4} w="100%" alignItems="flex-start">
+          <Text>{item.description}</Text>
+          <FormControl>
+            <FormLabel>Special Instructions</FormLabel>
+            <Textarea
+              placeholder="pepper / salt / cutluty..."
+              {...register("instructions")}
+            />
+          </FormControl>
+          <FormControl isInvalid={!!formState.errors.quantity?.type}>
+            <FormLabel>Quantity</FormLabel>
+            <Input
+              type="number"
+              defaultValue={1}
+              {...register("quantity", { min: 1, valueAsNumber: true })}
+            />
+            {!!formState.errors.quantity?.type && (
+              <FormErrorMessage>Invalid</FormErrorMessage>
+            )}
+          </FormControl>
+        </VStack>
+      </VStack>
+    </form>
   );
 };
