@@ -19,6 +19,8 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useDataProvider } from "../components/data-provider";
 import { ILine } from "../models";
 import { useEffect } from "react";
+import { BottomButton } from "../components/bottom-button";
+import { calculateItemTotal } from "../utils/calculations";
 
 const Variant = ({ allowMultiple, defaultValue, ...props }: any) =>
   allowMultiple ? (
@@ -32,7 +34,7 @@ const Choice = ({ allowMultiple, ...props }: any) =>
 
 export const Item = () => {
   const { id } = useParams();
-  const { getItemById } = useDataProvider();
+  const { getItemById, addToCart } = useDataProvider();
   const item = getItemById(id!);
   const { register, handleSubmit, formState, watch, control } = useForm<ILine>({
     defaultValues: {
@@ -47,7 +49,7 @@ export const Item = () => {
     name: "value",
   });
 
-  const onSubmit = (values: ILine) => console.log(values);
+  const onSubmit = (values: ILine) => addToCart(values);
 
   useEffect(() => {
     if (!item?.variants.length) return;
@@ -168,6 +170,14 @@ export const Item = () => {
           </FormControl>
         </VStack>
       </VStack>
+      <BottomButton
+        label="Add to Cart"
+        total={calculateItemTotal(
+          fields,
+          item.price,
+          watch("quantity")
+        ).toFixed(2)}
+      />
     </form>
   );
 };
