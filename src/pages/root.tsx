@@ -2,10 +2,13 @@ import { Box, Container, Flex, Heading, IconButton } from "@chakra-ui/react";
 
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { BsArrowLeftSquare, BsCart2, BsInfoCircle } from "react-icons/bs";
+import { useDataProvider } from "../components/data-provider";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { lines } = useDataProvider();
+  const hasCartItems = lines.length > 0;
 
   return (
     <Box p={4} bg="white" shadow="md">
@@ -33,6 +36,7 @@ const Navbar = () => {
           <IconButton
             aria-label="Cart"
             icon={<BsCart2 />}
+            colorScheme={hasCartItems ? "red" : undefined}
             onClick={() => {
               navigate("/cart");
             }}
