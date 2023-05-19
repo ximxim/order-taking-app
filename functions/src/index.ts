@@ -4,19 +4,10 @@ import {
   calculateOrderTotal,
   calculateOrderSubtotal,
 } from "./utils/calculations";
-// import * as functions from "firebase-functions";
-
-// // Start writing functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
 
 admin.initializeApp();
 
-export const PlaceOrder = onCall(async (request) => {
+export const placeorder = onCall(async (request) => {
   if (!request.auth) {
     return new HttpsError("failed-precondition", "You are not authorized");
   }
