@@ -8,6 +8,8 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Radio,
+  RadioGroup,
   Textarea,
   VStack,
 } from "@chakra-ui/react";
@@ -16,12 +18,15 @@ import { IOrder } from "../models";
 import { BottomButton } from "../components/bottom-button";
 import { useDataProvider } from "../components/data-provider";
 import { calculateOrderTotal } from "../utils/calculations";
+import { PAYMENT_METHODS } from "../utils/constants";
 
 export const Checkout = () => {
-  const { lines } = useDataProvider();
+  const { lines, restaurantInfo } = useDataProvider();
   const { register, handleSubmit, formState } = useForm<IOrder>();
 
   const onSubmit = (data: IOrder) => console.log(data);
+
+  if (!restaurantInfo) return null;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -67,7 +72,26 @@ export const Checkout = () => {
         </AccordionItem>
         <AccordionItem>
           <AccordionButton bg="gray.200">PAYMENT METHOD</AccordionButton>
-          <AccordionPanel>Something</AccordionPanel>
+          <AccordionPanel>
+            <VStack mt={4}>
+              <FormControl isInvalid={!!formState?.errors?.paymentMethod?.type}>
+                <FormLabel>Payment Method</FormLabel>
+                <RadioGroup>
+                  <VStack alignItems="flex-start">
+                    {restaurantInfo.paymentMethods.map((method) => (
+                      <Radio
+                        value={method}
+                        {...register("paymentMethod", { required: true })}
+                      >
+                        {PAYMENT_METHODS.find((m) => m.id === method)?.name}
+                      </Radio>
+                    ))}
+                  </VStack>
+                </RadioGroup>
+                <FormErrorMessage>Required</FormErrorMessage>
+              </FormControl>
+            </VStack>
+          </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
           <AccordionButton bg="gray.200">COMMENTS</AccordionButton>
