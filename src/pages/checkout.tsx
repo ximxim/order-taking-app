@@ -19,12 +19,17 @@ import { BottomButton } from "../components/bottom-button";
 import { useDataProvider } from "../components/data-provider";
 import { calculateOrderTotal } from "../utils/calculations";
 import { PAYMENT_METHODS } from "../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 export const Checkout = () => {
+  const navigate = useNavigate();
   const { lines, restaurantInfo, checkout } = useDataProvider();
   const { register, handleSubmit, formState } = useForm<IOrder>();
 
-  const onSubmit = (data: IOrder) => checkout(data);
+  const onSubmit = async (data: IOrder) => {
+    await checkout(data);
+    navigate("/thankyou");
+  };
 
   if (!restaurantInfo) return null;
 

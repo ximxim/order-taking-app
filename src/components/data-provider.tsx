@@ -15,7 +15,13 @@ import {
   IOrder,
   IRestraunt,
 } from "../models";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 import { db, auth, functions } from "../utils/firebase";
 import { signInAnonymously } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
@@ -109,6 +115,9 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
     const { data } = await placeorder({ ...order, lines });
     setLines([]);
     setOrder(data.order);
+    onSnapshot(doc(db, "order", data.id), (docSnapshot) => {
+      setOrder(docSnapshot.data() as IOrder);
+    });
     return data.id;
   };
 
