@@ -7,20 +7,30 @@ import {
   useEffect,
   useState,
 } from "react";
-import { ICategory, IItem, ILine, ILineValue, IRestraunt } from "../models";
+import {
+  ICategory,
+  IItem,
+  ILine,
+  ILineValue,
+  IOrder,
+  IRestraunt,
+} from "../models";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { db, auth } from "../utils/firebase";
+import { db, auth, functions } from "../utils/firebase";
 import { signInAnonymously } from "firebase/auth";
+import { httpsCallable } from "firebase/functions";
 
 interface IDataProviderContext {
   lines: ILine[];
   restaurantInfo?: IRestraunt;
   categories: ICategory[];
   items: IItem[];
+  order?: IOrder;
   getItemsByCategory: (category: string) => IItem[];
   getItemById: (itemId: string) => IItem | undefined;
   addToCart: (line: ILine) => void;
   removeCartItem: (index: number) => void;
+  checkout: (draftOrder: IOrder) => Promise<string>;
 }
 
 const DataProviderContext = createContext<IDataProviderContext>({
@@ -31,6 +41,7 @@ const DataProviderContext = createContext<IDataProviderContext>({
   getItemById: () => undefined,
   addToCart: () => {},
   removeCartItem: () => {},
+  checkout: () => Promise.resolve(""),
 });
 
 export const useDataProvider = () => useContext(DataProviderContext);
@@ -43,6 +54,7 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [items, setItems] = useState<IItem[]>([]);
   const [lines, setLines] = useState<ILine[]>([]);
+  const [order, setOrder] = useState<IOrder>();
 
   const fetchCategories = async () => {
     const categoriesSnapshot = await getDocs(collection(db, "categories"));
@@ -89,6 +101,17 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
     setLines(lines.filter((_, index) => index !== itemIndex));
   };
 
+  const checkout = async (order: IOrder) => {
+    const placeorder = httpsCallable<IOrder, { id: string; order: IOrder }>(
+      functions,
+      "placeorder"
+    );
+    const { data } = await placeorder({ ...order, lines });
+    setLines([]);
+    setOrder(data.order);
+    return data.id;
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -104,6 +127,8 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
         getItemById,
         addToCart,
         removeCartItem,
+        checkout,
+        order,
       }}
     >
       {isReady ? (

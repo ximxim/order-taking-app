@@ -21,10 +21,10 @@ import { calculateOrderTotal } from "../utils/calculations";
 import { PAYMENT_METHODS } from "../utils/constants";
 
 export const Checkout = () => {
-  const { lines, restaurantInfo } = useDataProvider();
+  const { lines, restaurantInfo, checkout } = useDataProvider();
   const { register, handleSubmit, formState } = useForm<IOrder>();
 
-  const onSubmit = (data: IOrder) => console.log(data);
+  const onSubmit = (data: IOrder) => checkout(data);
 
   if (!restaurantInfo) return null;
 
