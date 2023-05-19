@@ -1,6 +1,20 @@
-import { Box, Flex, Heading, IconButton, VStack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  IconButton,
+  VStack,
+  Text,
+  Divider,
+} from "@chakra-ui/react";
 import { GrClose } from "react-icons/gr";
 import { useDataProvider } from "../components/data-provider";
+import {
+  calculateItemTotal,
+  calculateOrderSubtotal,
+  calculateOrderTax,
+  calculateOrderTotal,
+} from "../utils/calculations";
 
 export const Cart = () => {
   const { lines } = useDataProvider();
@@ -37,6 +51,23 @@ export const Cart = () => {
           </Flex>
         </Flex>
       ))}
+      <Divider />
+      <VStack w="100%">
+        <Flex w="100%" justify="space-between" color="gray.600">
+          <Text fontSize={12}>Sub-Total</Text>
+          <Text fontSize={12}>${calculateOrderSubtotal(lines).toFixed(2)}</Text>
+        </Flex>
+        <Flex w="100%" justify="space-between" color="gray.600">
+          <Text fontSize={12}>Taxes (13%)</Text>
+          <Text fontSize={12}>${calculateOrderTax(lines, 13).toFixed(2)}</Text>
+        </Flex>
+        <Flex w="100%" justify="space-between">
+          <Heading fontSize={16}>Total</Heading>
+          <Heading fontSize={16}>
+            ${calculateOrderTotal(lines, 13).toFixed(2)}
+          </Heading>
+        </Flex>
+      </VStack>
     </VStack>
   );
 };
