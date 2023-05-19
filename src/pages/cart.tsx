@@ -10,17 +10,19 @@ import {
 import { GrClose } from "react-icons/gr";
 import { useDataProvider } from "../components/data-provider";
 import {
-  calculateItemTotal,
   calculateOrderSubtotal,
   calculateOrderTax,
   calculateOrderTotal,
 } from "../utils/calculations";
+import { BottomButton } from "../components/bottom-button";
+import { useNavigate } from "react-router-dom";
 
 export const Cart = () => {
-  const { lines } = useDataProvider();
+  const navigate = useNavigate();
+  const { lines, removeCartItem } = useDataProvider();
   return (
     <VStack px={4} py={2} mt={4}>
-      {lines.map((line) => (
+      {lines.map((line, index) => (
         <Flex justify="space-between" w="100%">
           <Heading flex={1} fontSize={16} maxW={50}>
             {line.quantity}x
@@ -45,6 +47,7 @@ export const Cart = () => {
             <IconButton
               size="xs"
               variant="ghost"
+              onClick={() => removeCartItem(index)}
               icon={<GrClose />}
               aria-label="Remove from cart"
             />
@@ -68,6 +71,11 @@ export const Cart = () => {
           </Heading>
         </Flex>
       </VStack>
+      <BottomButton
+        label="Go to checkout"
+        onClick={() => navigate("/checkout")}
+        total={calculateOrderTotal(lines, 13).toFixed(2)}
+      />
     </VStack>
   );
 };

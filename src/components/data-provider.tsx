@@ -20,6 +20,7 @@ interface IDataProviderContext {
   getItemsByCategory: (category: string) => IItem[];
   getItemById: (itemId: string) => IItem | undefined;
   addToCart: (line: ILine) => void;
+  removeCartItem: (index: number) => void;
 }
 
 const DataProviderContext = createContext<IDataProviderContext>({
@@ -29,6 +30,7 @@ const DataProviderContext = createContext<IDataProviderContext>({
   getItemsByCategory: () => [],
   getItemById: () => undefined,
   addToCart: () => {},
+  removeCartItem: () => {},
 });
 
 export const useDataProvider = () => useContext(DataProviderContext);
@@ -83,6 +85,10 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
     setLines([...lines, line]);
   };
 
+  const removeCartItem = (itemIndex: number) => {
+    setLines(lines.filter((_, index) => index !== itemIndex));
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -97,6 +103,7 @@ export const DataProvider: FunctionComponent<PropsWithChildren> = ({
         getItemsByCategory,
         getItemById,
         addToCart,
+        removeCartItem,
       }}
     >
       {isReady ? (
