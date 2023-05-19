@@ -5,7 +5,9 @@ import {
   AccordionPanel,
   Box,
   FormControl,
+  FormErrorMessage,
   FormLabel,
+  Input,
   Textarea,
   VStack,
 } from "@chakra-ui/react";
@@ -17,7 +19,7 @@ import { calculateOrderTotal } from "../utils/calculations";
 
 export const Checkout = () => {
   const { lines } = useDataProvider();
-  const { register, handleSubmit } = useForm<IOrder>();
+  const { register, handleSubmit, formState } = useForm<IOrder>();
 
   const onSubmit = (data: IOrder) => console.log(data);
 
@@ -26,7 +28,42 @@ export const Checkout = () => {
       <Accordion defaultIndex={[0, 1, 2]} allowMultiple>
         <AccordionItem>
           <AccordionButton bg="gray.200">CONTACT</AccordionButton>
-          <AccordionPanel>Something</AccordionPanel>
+          <AccordionPanel>
+            <VStack mt={4}>
+              <FormControl isInvalid={!!formState?.errors?.firstName?.type}>
+                <FormLabel>First Name</FormLabel>
+                <Input
+                  placeholder="First Name"
+                  {...register("firstName", { required: true })}
+                />
+                <FormErrorMessage>Required</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={!!formState?.errors?.lastName?.type}>
+                <FormLabel>Last Name</FormLabel>
+                <Input
+                  placeholder="Last Name"
+                  {...register("lastName", { required: true })}
+                />
+                <FormErrorMessage>Required</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={!!formState?.errors?.email?.type}>
+                <FormLabel>Email</FormLabel>
+                <Input
+                  placeholder="Email"
+                  {...register("email", { required: true })}
+                />
+                <FormErrorMessage>Required</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={!!formState?.errors?.phone?.type}>
+                <FormLabel>Phone</FormLabel>
+                <Input
+                  placeholder="Phone"
+                  {...register("phone", { required: true })}
+                />
+                <FormErrorMessage>Required</FormErrorMessage>
+              </FormControl>
+            </VStack>
+          </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
           <AccordionButton bg="gray.200">PAYMENT METHOD</AccordionButton>
