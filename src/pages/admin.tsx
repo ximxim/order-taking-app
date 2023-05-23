@@ -18,6 +18,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { CategoryProps } from "../components/category-resource";
 import { firebaseConfig } from "../utils/firebase";
 import { ItemProps } from "../components/item-resource";
+import { OrderProps } from "../components/order-resource";
 import { Route } from "react-router-dom";
 import { Info } from "../components/info";
 
@@ -58,6 +59,7 @@ export const Admin = () => {
     >
       <Resource {...CategoryProps} />
       <Resource {...ItemProps} />
+      <Resource {...OrderProps} />
       <CustomRoutes>
         <Route path="/info" element={<Info />} />
       </CustomRoutes>
