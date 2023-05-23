@@ -15,6 +15,7 @@
     "@types/react-dom": "^18.2.4",
     "firebase": "^9.21.0",
     "framer-motion": "^10.12.8",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-admin": "^4.10.2",
     "react-admin-firebase": "^4.1.2",

@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export type PaymentMethodType = 'cash' | 'card' | 'phone';
 
 export type ImageType = {
@@ -9,8 +11,8 @@ export interface IRestraunt {
 	name: string;
 	address: string;
 	phone: string;
-	closingTime: string;
-	openingTime: string;
+	closingTime: Timestamp;
+	openingTime: Timestamp;
 	paymentMethods: PaymentMethodType[];
 }
 
