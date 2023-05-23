@@ -21,34 +21,61 @@ import {
   SelectInput,
   ReferenceField,
   ChipField,
+  RadioButtonGroupInput,
+  ArrayField,
+  Labeled,
 } from "react-admin";
 import { MdReceipt } from "react-icons/md";
+import { ORDER_STATUS } from "../utils/constants";
 
 const OrderForm = () => {
   return (
     <SimpleForm sanitizeEmptyValues>
-      <ImageInput source="image" label="Image">
-        <ImageField source="src" title="title" />
-      </ImageInput>
-      <ReferenceInput source="category" reference="category">
-        <SelectInput optionText="title" fullWidth validate={[required()]} />
-      </ReferenceInput>
-      <TextInput source="label" validate={[required()]} fullWidth />
-      <NumberInput source="price" validate={[required(), number()]} fullWidth />
-      <TextInput source="description" fullWidth />
-      <ArrayInput source="variants">
-        <SimpleFormIterator fullWidth>
-          <TextInput source="type" helperText={false} fullWidth />
-          <ArrayInput source="choices">
-            <SimpleFormIterator inline>
-              <TextInput source="label" />
-              <NumberInput source="price" defaultValue={0} />
-            </SimpleFormIterator>
-          </ArrayInput>
-          <BooleanInput source="allowMultiple" helperText={false} fullWidth />
-          <BooleanInput source="isRequired" helperText={false} fullWidth />
-        </SimpleFormIterator>
-      </ArrayInput>
+      <Labeled label="First Name">
+        <TextField source="firstName" />
+      </Labeled>
+      <Labeled label="Last Name">
+        <TextField source="lastName" />
+      </Labeled>
+      <Labeled label="Email">
+        <TextField source="email" />
+      </Labeled>
+      <Labeled label="phone">
+        <TextField source="phone" />
+      </Labeled>
+      <Labeled label="comments">
+        <TextField source="comments" />
+      </Labeled>
+      <Labeled label="Total">
+        <NumberField
+          source="total"
+          options={{ style: "currency", currency: "CAD" }}
+        />
+      </Labeled>
+
+      <RadioButtonGroupInput choices={ORDER_STATUS} source="status" />
+      <TextInput source="reason" />
+
+      <ArrayField source="lines">
+        <Datagrid bulkActionButtons={false}>
+          <TextField source="label" />
+          <NumberField
+            source="price"
+            options={{ style: "currency", currency: "CAD" }}
+          />
+          <NumberField source="quantity" />
+          <TextField source="comments" />
+          <ArrayField source="value">
+            <Datagrid bulkActionButtons={false}>
+              <TextField source="value" />
+              <NumberField
+                source="price"
+                options={{ style: "currency", currency: "CAD" }}
+              />
+            </Datagrid>
+          </ArrayField>
+        </Datagrid>
+      </ArrayField>
     </SimpleForm>
   );
 };
